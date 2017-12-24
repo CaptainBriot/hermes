@@ -1,0 +1,15 @@
+- name: build the hermes Python library
+  command: '{{ playbook_dir }}/venv/bin/python setup.py sdist --dist-dir {{ role_path }}/files/dist/'
+  args:
+    chdir: pantheon-hermes
+  connection: local
+
+- name: remove remote dist folder
+  file:
+    path: /tmp/dist
+    state: absent
+
+- name: copy dist folder to remote
+  copy:
+    src: dist
+    dest: /tmp

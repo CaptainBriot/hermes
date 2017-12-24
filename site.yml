@@ -1,0 +1,14 @@
+---
+# Deploy to all miners.
+
+- hosts: all
+
+  pre_tasks:
+    - name: updating apt-get cache
+      apt:
+        update_cache: yes
+      become: yes
+
+  roles:
+    - python
+    - hermes

@@ -1,0 +1,11 @@
+- name: install Python pip
+  apt:
+    name: python-pip
+    state: latest
+  become: yes
+
+- name: install Python virtualenv
+  apt:
+    name: python-virtualenv
+    state: latest
+  become: yes
