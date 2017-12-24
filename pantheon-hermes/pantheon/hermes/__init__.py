@@ -6,6 +6,7 @@ from . import command
 from . import gpu
 from . import nvidia
 from . import power
+from . import overclock
 
 DISPLAY = 999
 engine = asyncio.get_event_loop()

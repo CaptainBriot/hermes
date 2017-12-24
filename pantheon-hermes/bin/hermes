@@ -42,8 +42,13 @@ def main():
 
     power = pantheon.hermes.power.PowerControl()
     power()
+
+    overclock = pantheon.hermes.overclock.OverclockControl()
+    overclock()
+
     fan = pantheon.hermes.fan.FanControl()
     pantheon.hermes.engine.create_task(fan())
+
     pantheon.hermes.engine.run_forever()
     pantheon.hermes.engine.close()
 
