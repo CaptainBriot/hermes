@@ -29,6 +29,13 @@ class FanControl:
         slope = (float(self.speed.max - self.speed.min) / float(self.temperature.max - self.temperature.min))
         return int((slope * (temperature - self.temperature.max)) + self.speed.max)
 
+    @staticmethod
+    def initialize_fan_control():
+        args = ''
+        for uid in pantheon.hermes.gpu.GPUS:
+            args += ' -a [gpu:{}]/GPUFanControlState=1'.format(uid)
+        pantheon.hermes.nvidia.settings.settings(args)
+
     async def update_fans_speed(self):
         LOGGER.info('Updating fans speed')
         setting = pantheon.hermes.nvidia.settings.settings('-q GPUCoreTemp')
@@ -45,16 +52,19 @@ class FanControl:
         LOGGER.debug(info)
         assert len(info) == len(pantheon.hermes.gpu.GPUS)
 
+        args = ''
         for uid, temperature in info.items():
             gpu = pantheon.hermes.gpu.GPUS[uid]
             gpu.temperature = temperature
             LOGGER.info('%s temperature is %s', gpu, temperature)
             speed = self.speed_for_temperature(temperature)
             LOGGER.info('Changing %s fan speed to %s', gpu, speed)
-            pantheon.hermes.nvidia.settings.settings(
-                '-a [gpu:{}]/GPUFanControlState=1 -a [fan-{}]/GPUTargetFanSpeed={}'.format(uid, uid, speed))
+            args += ' -a [fan-{}]/GPUTargetFanSpeed={}'.format(uid, speed)
+
+        pantheon.hermes.nvidia.settings.settings(args)
 
     async def __call__(self):
+        self.initialize_fan_control()
         while True:
             pantheon.hermes.engine.call_later(0, pantheon.hermes.engine.create_task, self.update_fans_speed())
             await asyncio.sleep(self.rate)

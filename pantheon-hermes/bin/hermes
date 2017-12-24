@@ -10,13 +10,13 @@ import pantheon.hermes
 def init_logging(options):
     stdout_handler = logging.StreamHandler(sys.stdout)
     stdout_handler.setLevel(logging.DEBUG)
-    stdout_fmt = '%(asctime)s|%(levelname)s|%(name)s|%(message)s|%(filename)s|%(lineno)s'
-    stdout_handler.setFormatter(logging.Formatter(fmt=stdout_fmt))
 
-    syslog_handler = logging.handlers.SysLogHandler(address='/dev/log')
-    syslog_handler.setLevel(logging.DEBUG)
-    syslog_fmt = '%(name)s[%(process)d]: %(message)s (%(filename)s|%(lineno)s)'
-    syslog_handler.setFormatter(logging.Formatter(fmt=syslog_fmt))
+    if sys.stdout.isatty():
+        stdout_fmt = '%(asctime)s|%(levelname)s|%(name)s|%(message)s|%(filename)s|%(lineno)s'
+    else:
+        stdout_fmt = '%(levelname)s|%(name)s|%(message)s|%(filename)s|%(lineno)s'
+
+    stdout_handler.setFormatter(logging.Formatter(fmt=stdout_fmt))
 
     if options.verbosity:
         level = logging.DEBUG
@@ -30,7 +30,6 @@ def init_logging(options):
 
     logging.root.setLevel(level)
     logging.root.addHandler(stdout_handler)
-    logging.root.addHandler(syslog_handler)
 
 
 def main():

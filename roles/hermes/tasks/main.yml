@@ -20,3 +20,18 @@
     state: latest
     virtualenv: ~/venv
     extra_args: -vvv -f /tmp/dist --no-cache
+
+- name: copying hermes service file
+  copy:
+    src: hermes.service
+    dest: /etc/systemd/system/
+    mode: 755
+  become: yes
+
+- name: enabling hermes in systemd
+  systemd:
+    name: hermes.service
+    enabled: yes
+    state: restarted
+    daemon_reload: yes
+  become: yes

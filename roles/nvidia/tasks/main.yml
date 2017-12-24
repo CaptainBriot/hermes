@@ -22,7 +22,7 @@
     mode: 755
   become: yes
 
-- name: enabling xserver server in systemd
+- name: enabling xserver service in systemd
   systemd:
     name: xserver.service
     enabled: yes

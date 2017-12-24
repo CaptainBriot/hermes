@@ -6,6 +6,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 def settings(args):
+    args = args.strip()
     cmd = pantheon.hermes.command.Command('nvidia-settings --display :{} {}'.format(pantheon.hermes.DISPLAY, args))
     cmd()
 

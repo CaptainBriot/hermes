@@ -1,0 +1,12 @@
+[Unit]
+Description=Hermes mining controller
+After=network.target xserver.service
+
+[Service]
+Type=simple
+User=miner
+ExecStart=/home/miner/venv/bin/hermes
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target
