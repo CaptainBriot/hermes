@@ -1,0 +1,3 @@
+#!/bin/bash
+systemctl set-default graphical.target
+X :999

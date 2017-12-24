@@ -9,6 +9,7 @@ install_require = []
 
 setuptools.setup(
     name='pantheon-hermes',
+    namespace_packages=['pantheon'],
     version=version['__version__'],
     description='Crypto-currency mining framework.',
     python_requires='>=3.5',

@@ -1,15 +1,22 @@
-- name: build the hermes Python library
+- name: building the pantheon-hermes Python library
   command: '{{ playbook_dir }}/venv/bin/python setup.py sdist --dist-dir {{ role_path }}/files/dist/'
   args:
     chdir: pantheon-hermes
   connection: local
 
-- name: remove remote dist folder
+- name: removing remote dist folder
   file:
     path: /tmp/dist
     state: absent
 
-- name: copy dist folder to remote
+- name: copying dist folder to remote
   copy:
     src: dist
     dest: /tmp
+
+- name: installing pantheon-hermes Python library
+  pip:
+    name: pantheon-hermes
+    state: latest
+    virtualenv: ~/venv
+    extra_args: -vvv -f /tmp/dist --no-cache

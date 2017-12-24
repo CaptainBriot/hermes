@@ -1,0 +1,31 @@
+- name: installing nvidia drivers
+  apt:
+    name: nvidia-384
+    state: latest
+  become: yes
+
+- name: generating nvidia xconfig
+  command: nvidia-xconfig --enable-all-gpus --allow-empty-initial-configuration --cool-bits=28
+  become: yes
+
+- name: copying xserver binary
+  copy:
+    src: xserver
+    dest: /usr/bin/
+    mode: 0755
+  become: yes
+
+- name: copying xserver service file
+  copy:
+    src: xserver.service
+    dest: /etc/systemd/system/
+    mode: 755
+  become: yes
+
+- name: enabling xserver server in systemd
+  systemd:
+    name: xserver.service
+    enabled: yes
+    state: reloaded
+    daemon_reload: yes
+  become: yes

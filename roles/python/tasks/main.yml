@@ -1,11 +1,26 @@
-- name: install Python pip
+- name: installing Python pip
   apt:
     name: python-pip
     state: latest
   become: yes
 
-- name: install Python virtualenv
+- name: installing Python virtualenv
   apt:
     name: python-virtualenv
     state: latest
   become: yes
+
+- name: removing venv
+  file:
+    path: ~/venv
+    state: absent
+
+- name: installing venv
+  command: virtualenv -p python3 ~/venv
+
+- name: updating venv pip
+  pip:
+    name: pip
+    state: latest
+    virtualenv: ~/venv
+    extra_args: -vvv
