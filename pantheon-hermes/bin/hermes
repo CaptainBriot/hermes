@@ -40,6 +40,8 @@ def main():
 
     init_logging(options)
 
+    power = pantheon.hermes.power.PowerControl()
+    power()
     fan = pantheon.hermes.fan.FanControl()
     pantheon.hermes.engine.create_task(fan())
     pantheon.hermes.engine.run_forever()

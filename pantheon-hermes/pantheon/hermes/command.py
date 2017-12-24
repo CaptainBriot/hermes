@@ -24,6 +24,19 @@ class Command:
         except AttributeError:
             return None
 
+    def log_lines(self):
+        if self.stdout is not None:
+            for line in self.stdout.splitlines():
+                line = line.decode("utf-8").strip()
+                if line:
+                    LOGGER.debug(line)
+
+        if self.stderr is not None:
+            for line in self.stderr.splitlines():
+                line = line.decode("utf-8").strip()
+                if line:
+                    LOGGER.error(line)
+
     def __bool__(self):
         return self.returncode == 0
 

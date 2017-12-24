@@ -5,16 +5,15 @@ import logging
 from . import nvidia
 
 LOGGER = logging.getLogger(__name__)
-GPUS = None
 
 
 def load_gpus():
-    global GPUS
-    GPUS = {}
+    gpus = {}
     top, dirs, nondirs = os.walk(os.path.join(os.sep, 'proc', 'driver', 'nvidia', 'gpus')).__next__()
     for name in dirs:
         gpu = load_one_gpu(os.path.join(top, name))
-        GPUS[gpu.uid] = gpu
+        gpus[gpu.uid] = gpu
+    return gpus
 
 
 def load_one_gpu(path):
@@ -34,4 +33,4 @@ def load_one_gpu(path):
         return nvidia.helpers.from_dict(info)
 
 
-load_gpus()
+GPUS = load_gpus()

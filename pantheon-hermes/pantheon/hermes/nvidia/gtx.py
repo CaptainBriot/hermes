@@ -1,5 +1,8 @@
 class Nvidia1070:
     model = 'GeForce GTX 1070'
+    mem = 1240
+    clock = 100
+    power = 110
 
     def __init__(self, uid, bus):
         self.uid = uid

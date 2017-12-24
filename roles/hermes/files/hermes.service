@@ -4,7 +4,7 @@ After=network.target xserver.service
 
 [Service]
 Type=simple
-User=miner
+User=root
 ExecStart=/home/miner/venv/bin/hermes
 Restart=on-abort
 

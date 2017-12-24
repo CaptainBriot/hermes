@@ -5,8 +5,9 @@ from . import fan
 from . import command
 from . import gpu
 from . import nvidia
+from . import power
 
 DISPLAY = 999
 engine = asyncio.get_event_loop()
 
-__all__ = ['__version__', 'fan', 'engine', 'command', 'gpu', 'nvidia', 'DISPLAY']
+__all__ = ['__version__', 'fan', 'engine', 'command', 'gpu', 'nvidia', 'DISPLAY', 'power']
