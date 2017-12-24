@@ -26,6 +26,6 @@
   systemd:
     name: xserver.service
     enabled: yes
-    state: reloaded
+    state: restarted
     daemon_reload: yes
   become: yes

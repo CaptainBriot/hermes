@@ -14,6 +14,7 @@ setuptools.setup(
     description='Crypto-currency mining framework.',
     python_requires='>=3.5',
     packages=setuptools.find_packages(),
+    scripts=[os.path.join('bin', 'hermes')],
     install_require=install_require,
     test_suite='nose.collector',
     tests_require=tests_require,
