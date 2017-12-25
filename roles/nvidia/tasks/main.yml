@@ -19,7 +19,7 @@
   copy:
     src: xserver.service
     dest: /etc/systemd/system/
-    mode: 755
+    mode: 0444
   become: yes
 
 - name: enabling xserver service in systemd

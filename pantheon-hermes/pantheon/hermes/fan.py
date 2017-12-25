@@ -1,6 +1,6 @@
-import re
 import asyncio
 import logging
+import re
 
 import pantheon.hermes
 
@@ -32,13 +32,14 @@ class FanControl:
     @staticmethod
     def initialize_fan_control():
         args = ''
-        for uid in pantheon.hermes.gpu.GPUS:
+        for uid in pantheon.hermes.gpu.GPU:
             args += ' -a [gpu:{}]/GPUFanControlState=1'.format(uid)
-        pantheon.hermes.nvidia.settings.settings(args)
+        pantheon.hermes.gpu.nvidia.settings.settings(args)
 
     async def update_fans_speed(self):
         LOGGER.info('Updating fans speed')
-        setting = pantheon.hermes.nvidia.settings.settings('-q GPUCoreTemp')
+        # TODO: use 'nvidia-smi --query-gpu=index,temperature.gpu --format=csv,noheader' instead
+        setting = pantheon.hermes.gpu.nvidia.settings.settings('-q GPUCoreTemp')
 
         info = {}
         regex = re.compile(".*Attribute 'GPUCoreTemp'.*\[gpu:(?P<uid>\d+)\].*: (?P<temperature>\d+)\..*")
@@ -50,18 +51,18 @@ class FanControl:
                 info[int(group['uid'])] = int(group['temperature'])
 
         LOGGER.debug(info)
-        assert len(info) == len(pantheon.hermes.gpu.GPUS)
+        assert len(info) == len(pantheon.hermes.gpu.GPU)
 
         args = ''
         for uid, temperature in info.items():
-            gpu = pantheon.hermes.gpu.GPUS[uid]
+            gpu = pantheon.hermes.gpu.GPU[uid]
             gpu.temperature = temperature
             LOGGER.info('%s temperature is %s', gpu, temperature)
             speed = self.speed_for_temperature(temperature)
             LOGGER.info('Changing %s fan speed to %s', gpu, speed)
             args += ' -a [fan-{}]/GPUTargetFanSpeed={}'.format(uid, speed)
 
-        pantheon.hermes.nvidia.settings.settings(args)
+        pantheon.hermes.gpu.nvidia.settings.settings(args)
 
     async def __call__(self):
         self.initialize_fan_control()

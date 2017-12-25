@@ -15,7 +15,7 @@ class PowerControl:
 
     @staticmethod
     def set_power_limit():
-        for gpu in pantheon.hermes.gpu.GPUS.values():
+        for gpu in pantheon.hermes.gpu.GPU.values():
             LOGGER.info('Setting power limit for %s at %s', gpu, gpu.power)
             command = pantheon.hermes.command.Command('nvidia-smi -i {} -pl {}'.format(gpu.uid, gpu.power))
             command()

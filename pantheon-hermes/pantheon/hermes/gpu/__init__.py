@@ -1,10 +1,15 @@
+import logging
 import os
 import re
-import logging
 
-from . import nvidia
+from . import meta
+from . import gpu
 
 LOGGER = logging.getLogger(__name__)
+REGISTRY = meta.GPUMeta.registry  # This is the registry of supported GPUs.
+
+# Modules that need REGISTRY have the be imported after REGISTRY gets defined.
+from . import nvidia
 
 
 def load_gpus():
@@ -33,4 +38,6 @@ def load_one_gpu(path):
         return nvidia.helpers.from_dict(info)
 
 
-GPUS = load_gpus()
+GPU = load_gpus()
+
+__all__ = ['meta', 'REGISTRY', 'nvidia', 'GPU']
