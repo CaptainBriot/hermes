@@ -1,1 +1,1 @@
-ansible-playbook -vvv -i production --ask-pass --ask-become-pass site.yml
+ansible-playbook -i production --ask-pass --ask-become-pass -u miner site.yml
