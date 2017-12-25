@@ -63,5 +63,5 @@ class FanControl:
     async def __call__(self):
         self.initialize_fan_control()
         while True:
-            pantheon.hermes.engine.call_later(0, pantheon.hermes.engine.create_task, self.update_fans_speed())
+            pantheon.hermes.loop.call_later(0, pantheon.hermes.loop.create_task, self.update_fans_speed())
             await asyncio.sleep(self.rate)

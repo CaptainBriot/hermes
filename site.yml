@@ -2,6 +2,7 @@
 # Deploy to all miners.
 
 - hosts: all
+  become: yes
 
   pre_tasks:
     - name: removing localhost venv
@@ -9,10 +10,12 @@
         path: venv
         state: absent
       connection: local
+      become: no
 
     - name: installing localhost venv
       command: virtualenv -p python3 venv
       connection: local
+      become: no
 
     - name: updating localhost venv pip
       pip:
@@ -21,11 +24,11 @@
         virtualenv: '{{ playbook_dir }}/venv'
         extra_args: -vvv
       connection: local
+      become: no
 
     - name: updating apt-get cache
       apt:
         update_cache: yes
-      become: yes
 
   roles:
     - nvidia

@@ -2,25 +2,23 @@
   apt:
     name: python-pip
     state: latest
-  become: yes
 
 - name: installing Python virtualenv
   apt:
     name: python-virtualenv
     state: latest
-  become: yes
 
 - name: removing venv
   file:
-    path: ~/venv
+    path: /etc/hermes/venv
     state: absent
 
 - name: installing venv
-  command: virtualenv -p python3 ~/venv
+  command: virtualenv -p python3 /etc/hermes/venv
 
 - name: updating venv pip
   pip:
     name: pip
     state: latest
-    virtualenv: ~/venv
+    virtualenv: /etc/hermes/venv
     extra_args: -vvv

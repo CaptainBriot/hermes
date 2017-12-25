@@ -8,6 +8,6 @@ from . import power
 from .version import __version__
 
 DISPLAY = 999
-engine = asyncio.get_event_loop()
+loop = asyncio.get_event_loop()
 
-__all__ = ['__version__', 'fan', 'engine', 'command', 'gpu', 'DISPLAY', 'power']
+__all__ = ['__version__', 'fan', 'loop', 'command', 'gpu', 'DISPLAY', 'power']

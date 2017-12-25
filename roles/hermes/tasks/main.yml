@@ -3,6 +3,7 @@
   args:
     chdir: pantheon-hermes
   connection: local
+  become: no
 
 - name: removing remote dist folder
   file:
@@ -18,7 +19,7 @@
   pip:
     name: pantheon-hermes
     state: latest
-    virtualenv: ~/venv
+    virtualenv: /etc/hermes/venv
     extra_args: -vvv -f /tmp/dist --no-cache
 
 - name: copying hermes service file
@@ -26,7 +27,6 @@
     src: hermes.service
     dest: /etc/systemd/system/
     mode: 0444
-  become: yes
 
 - name: enabling hermes in systemd
   systemd:
@@ -34,4 +34,3 @@
     enabled: yes
     state: restarted
     daemon_reload: yes
-  become: yes

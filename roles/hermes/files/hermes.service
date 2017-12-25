@@ -5,7 +5,8 @@ After=network.target xserver.service
 [Service]
 Type=simple
 User=root
-ExecStart=/home/miner/venv/bin/hermes
+WorkingDirectory=/etc/hermes
+ExecStart=/etc/hermes/venv/bin/hermes
 Restart=on-abort
 
 [Install]

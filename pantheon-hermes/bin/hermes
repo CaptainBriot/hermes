@@ -3,8 +3,12 @@ import logging
 import logging.handlers
 import sys
 import argparse
+import traceback
+import asyncio
 
 import pantheon.hermes
+
+LOGGER = logging.getLogger(__name__)
 
 
 def init_logging(options):
@@ -26,10 +30,37 @@ def init_logging(options):
         level = logging.DEBUG
 
     if options.verbosity >= 2:
-        pantheon.hermes.engine.set_debug(True)
+        pantheon.hermes.loop.set_debug(True)
 
     logging.root.setLevel(level)
     logging.root.addHandler(stdout_handler)
+
+
+class Claymore:
+    def __init__(self):
+        self.factory = asyncio.create_subprocess_exec(
+            '/bin/bash', 'mine.sh', loop=pantheon.hermes.loop, stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.STDOUT, cwd='/tmp/miner')
+        self.process = None
+
+    async def __call__(self):
+        self.process = await self.factory
+
+        while True:
+            line = await self.process.stdout.readline()
+
+            if not line:
+                break
+
+            try:
+                line = line.decode('utf-8').strip()
+            except UnicodeDecodeError:
+                pass
+
+            if line:
+                LOGGER.debug(line)
+
+        await self.process.wait()
 
 
 def main():
@@ -40,6 +71,8 @@ def main():
 
     init_logging(options)
 
+    LOGGER.debug('Supported GPUs are: %s', pantheon.hermes.gpu.REGISTRY)
+
     power = pantheon.hermes.power.PowerControl()
     power()
 
@@ -47,10 +80,19 @@ def main():
     overclock()
 
     fan = pantheon.hermes.fan.FanControl()
-    pantheon.hermes.engine.create_task(fan())
+    pantheon.hermes.loop.create_task(fan())
 
-    pantheon.hermes.engine.run_forever()
-    pantheon.hermes.engine.close()
+    claymore = Claymore()
+    pantheon.hermes.loop.create_task(claymore())
+
+    try:
+        pantheon.hermes.loop.run_forever()
+    except Exception as ex:
+        LOGGER.error(ex)
+        LOGGER.debug(traceback.format_exc())
+    finally:
+        pantheon.hermes.loop.close()
+        claymore.process.terminate()
 
 
 if __name__ == '__main__':
