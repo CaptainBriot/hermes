@@ -17,7 +17,7 @@ def load_gpus():
     top, dirs, nondirs = os.walk(os.path.join(os.sep, 'proc', 'driver', 'nvidia', 'gpus')).__next__()
     for name in dirs:
         gpu = load_one_gpu(os.path.join(top, name))
-        gpus[gpu.uid] = gpu
+        gpus[gpu.index] = gpu
     return gpus
 
 

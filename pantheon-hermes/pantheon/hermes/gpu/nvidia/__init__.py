@@ -1,5 +1,5 @@
 from . import gtx
 from . import helpers
-from . import settings
+from . import api
 
-__all__ = ['gtx', 'helpers', 'settings']
+__all__ = ['gtx', 'helpers', 'api.py']

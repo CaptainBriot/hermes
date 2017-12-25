@@ -32,37 +32,33 @@ class FanControl:
     @staticmethod
     def initialize_fan_control():
         args = ''
-        for uid in pantheon.hermes.gpu.GPU:
-            args += ' -a [gpu:{}]/GPUFanControlState=1'.format(uid)
-        pantheon.hermes.gpu.nvidia.settings.settings(args)
+        for index in pantheon.hermes.gpu.GPU:
+            args += ' -a [gpu:{}]/GPUFanControlState=1'.format(index)
+        pantheon.hermes.gpu.nvidia.api.settings(args)
 
     async def update_fans_speed(self):
         LOGGER.info('Updating fans speed')
-        # TODO: use 'nvidia-smi --query-gpu=index,temperature.gpu --format=csv,noheader' instead
-        setting = pantheon.hermes.gpu.nvidia.settings.settings('-q GPUCoreTemp')
+        setting = pantheon.hermes.gpu.nvidia.api.smi('index', 'temperature.gpu')
 
         info = {}
-        regex = re.compile(".*Attribute 'GPUCoreTemp'.*\[gpu:(?P<uid>\d+)\].*: (?P<temperature>\d+)\..*")
         for line in setting.stdout.splitlines():
-            line = str(line)
-            search = regex.search(line)
-            if search:
-                group = search.groupdict()
-                info[int(group['uid'])] = int(group['temperature'])
+            line = line.decode('utf-8')
+            index, temperature = [int(item.strip()) for item in line.split(',')]
+            info[index] = temperature
 
         LOGGER.debug(info)
         assert len(info) == len(pantheon.hermes.gpu.GPU)
 
         args = ''
-        for uid, temperature in info.items():
-            gpu = pantheon.hermes.gpu.GPU[uid]
+        for index, temperature in info.items():
+            gpu = pantheon.hermes.gpu.GPU[index]
             gpu.temperature = temperature
             LOGGER.info('%s temperature is %s', gpu, temperature)
             speed = self.speed_for_temperature(temperature)
             LOGGER.info('Changing %s fan speed to %s', gpu, speed)
-            args += ' -a [fan-{}]/GPUTargetFanSpeed={}'.format(uid, speed)
+            args += ' -a [fan-{}]/GPUTargetFanSpeed={}'.format(index, speed)
 
-        pantheon.hermes.gpu.nvidia.settings.settings(args)
+        pantheon.hermes.gpu.nvidia.api.settings(args)
 
     async def __call__(self):
         self.initialize_fan_control()
