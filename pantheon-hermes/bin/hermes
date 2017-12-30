@@ -43,7 +43,7 @@ class Claymore:
             '0x57b5F2cD0E014d3ABba44A7bc69D8Ec07d36489A.miner-0000', '-epsw', 'x', '-mode', '1', '-allpools', '1',
             '-colors', '0',
             loop=pantheon.hermes.loop, stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.STDOUT, cwd='/tmp/miner')
+            stderr=asyncio.subprocess.STDOUT, cwd='/home/miner/claymore')
         self.process = None
 
     async def __call__(self):

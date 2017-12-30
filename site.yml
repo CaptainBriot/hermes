@@ -31,6 +31,6 @@
         update_cache: yes
 
   roles:
-    - nvidia
+    - graphics
     - python
     - hermes
